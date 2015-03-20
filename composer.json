@@ -8,8 +8,10 @@
             "email": "joel@zineer.com"
         }
     ],
-    "minimum-stability": "dev",
-    "require": {},
+    "minimum-stability": "stable",
+    "require": {
+	    "ext-gd": "*"
+    },
     "autoload": {
         "psr-4": {
             "Zineer\\MarkerSprite\\": "src"
