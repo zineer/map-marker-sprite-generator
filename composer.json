@@ -1,0 +1,18 @@
+{
+    "name": "zineer/Map Maker Sprite Generator",
+    "description": "A tool for generating Google Map Marker Icons in a sprite image sheet with a custom color marker and a range of alphanumeric symbols",
+    "license": "Public Domain",
+    "authors": [
+        {
+            "name": "Joel Duifhuis",
+            "email": "joel@zineer.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        psr-4": {
+            "Zineer\\MarkerSprite": "src"
+        }
+    }
+}
