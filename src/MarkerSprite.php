@@ -190,6 +190,10 @@ class MarkerSprite {
 		array_splice($this->symbols, $max);
 		$this->numSymbolsPerRow = ceil(sqrt(count($this->symbols)*count($this->colors)));
 	}
+	
+	public function __get($name){
+		return $this->$name;
+	}
 }
 
 
