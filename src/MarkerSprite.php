@@ -1,5 +1,5 @@
 <?
-namespace zineer\MarkerSprite;
+namespace Zineer\MarkerSprite;
 
 class MarkerSprite {
 		
@@ -60,7 +60,7 @@ class MarkerSprite {
 		imagedestroy($marker);
 	}
 	
-	public function generateImage($asFile = false){				
+	public function generateImage($filePath = false){				
 		$spriteSheet = imagecreatetruecolor($this->numSymbolsPerRow * $this->markerWidth, $this->numSymbolsPerRow * $this->markerHeight);
 		imagefill($spriteSheet, 0, 0, IMG_COLOR_TRANSPARENT);
 		imagealphablending($spriteSheet, false);
@@ -136,10 +136,8 @@ class MarkerSprite {
 			imagedestroy($colorMarker);
 		}
 		
-		if($asFile){
-			$filename = sys_get_temp_dir().DIRECTORY_SEPARATOR.uniqid('markers_').'.png';
-			imagepng($spriteSheet, $filename);
-			return $filename;
+		if($filePath){
+			return imagepng($spriteSheet, $filePath);
 		}else{		
 			header('Content-Disposition: Attachment;filename=markers.png');
 			header("Content-type: image/png");
