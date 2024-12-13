@@ -31,12 +31,17 @@ class MarkerSprite {
 		if($includeBlank){
 			$this->symbols[] = '';
 		}
-
+		
+		$this->colors = [];
 		if(is_array($color)){
 			foreach($color AS $c){
 				$cClean = ltrim($c, '#');
 				$rgb = sscanf($cClean, "%02x%02x%02x");
 				if($rgb != -1){
+					while(array_key_exists($cClean, $this->colors)){
+						$rgb[2]++;
+						$cClean = sprintf('%02x', $rgb[0]) . sprintf('%02x', $rgb[1]) . sprintf('%02x', $rgb[2]);
+					}
 					$this->colors[$cClean] = $rgb;
 				}
 			}
@@ -66,10 +71,12 @@ class MarkerSprite {
 		imagealphablending($spriteSheet, false);
 		imagesavealpha($spriteSheet, true);
 		
-		$fontColor = imagecolorallocate($spriteSheet, 0, 0, 0);
+		$whiteColor = imagecolorallocate($spriteSheet, 255, 255, 255);
+		$blackColor = imagecolorallocate($spriteSheet, 0, 0, 0);
 		
 		$row = 0;
 		$col = 0;
+		$count = 0;
 		foreach($this->colors AS $color){
 			$marker = imagecreatefrompng(__DIR__.'/images/marker.png');
 			$colorMarker = imagecreatefrompng(__DIR__.'/images/marker.png');
@@ -86,17 +93,31 @@ class MarkerSprite {
 							
 					$newColor = imagecolorallocatealpha(
 						$colorMarker,
-						$color[0] * $amt,
-						$color[1] * $amt,
-						$color[2] * $amt,
+						(int)($color[0] * $amt),
+						(int)($color[1] * $amt),
+						(int)($color[2] * $amt),
 						$c['alpha']
 					);
 					
 					imagesetpixel( $colorMarker, $x, $y, $newColor);
 				}
 			}
-
+			
+			// Counting the perceptive luminance - human eye favors green color... 
+			if ((1 - ( 0.299 * $color[0] + 0.587 * $color[1] + 0.114 * $color[2])/255) < 0.5){
+				$fontColor = $blackColor;
+			}else{
+				$fontColor = $whiteColor;
+			}
+			
 			foreach($this->symbols AS $string){
+				if($string == '#'){
+					if($count > 0){
+						$string = ($count);
+					}else{
+						$string = '';
+					}
+				}
 				//generate tmp image with marker and symbol
 				$tmp = imagecreatetruecolor($this->markerWidth, $this->markerHeight);
 				imagefill($tmp, 0, 0, IMG_COLOR_TRANSPARENT);
@@ -127,6 +148,7 @@ class MarkerSprite {
 				imagedestroy($tmp);
 				
 				$col++;
+				$count++;
 				if($col >= $this->numSymbolsPerRow){
 					$col = 0;
 					$row++;
